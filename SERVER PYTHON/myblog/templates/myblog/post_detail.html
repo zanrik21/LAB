@@ -1,0 +1,39 @@
+{% extends 'myblog/base.html' %}
+
+{% block content %}
+<div class="post">
+
+
+
+    {% if post.published_date %}
+        <div class="date">{{ post.published_date }}</div>
+    {% else %}
+        <div class="date">Draft</div>
+    {% endif %}
+
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.text|linebreaksbr }}</p>
+
+    {% if user.is_authenticated %}
+    <a class="btn btn-primary" href="{% url 'post_edit' pk=post.pk %}">✏️ Edit</a>
+    {% if not post.published_date %}
+        <a class="btn btn-success" href="{% url 'post_publish' pk=post.pk %}">✅ Publish</a>
+    {% endif %}
+    <a class="btn btn-danger" href="{% url 'post_remove' pk=post.pk %}">🗑 Delete</a>
+{% endif %}
+<a href="{% url 'add_comment_to_post' pk=post.pk %}">Add comment</a>
+
+<hr>
+<h2>Коментарі</h2>
+{% for comment in post.all_comments %}
+    <div class="comment">
+        <strong>{{ comment.author }}</strong>
+        <p>{{ comment.text }}</p>
+        <small>{{ comment.created_date }}</small>
+    </div>
+{% empty %}
+    <p>Ще немає коментарів.</p>
+{% endfor %}
+
+</div>
+{% endblock %}
